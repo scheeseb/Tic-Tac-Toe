@@ -19,26 +19,63 @@ const gameBoard = (function createGameBoard(size) {
     return { board }
 
 })(3)
-console.log(gameBoard.board[0])
-function checkXWinFor(marker) {
-    let fullRow = false
-    gameBoard.board.forEach((array) => {
-        let hitstatus = 0;
-        array.forEach(function () {
-            i = 0
-            if (array[i] === marker) {
-                hitstatus++
+console.log(gameBoard.board)
+
+
+function checkForWin(marker) {
+    // check all horizontal matches
+    (function checkX() {
+        gameBoard.board.forEach(function (array) {
+            let hitStatus = 0;
+
+            array.forEach(function (mark) {
+                if (mark === marker) {
+                    hitStatus++
+                }
+            })
+
+            if (hitStatus === array.length) {
+                console.log("True X axis")
+                return true;
             }
-            i++
         })
-        if(hitstatus === array.length){
-            console.log("True")
-            return fullRow = true;
+    })();
+    // 
+    // Check Vertical for matches
+    (function checkY() {
+
+        for (i = 0; i < gameBoard.board.length; i++) {
+            let hitStatus = 0;
+            for (j = 0; j < gameBoard.board.length; j++) {
+                if (gameBoard.board[j][i] === marker) {
+                    hitStatus++
+                }
+                if (hitStatus === gameBoard.board.length) {
+                    console.log('True Y axis')
+                }
+            }
         }
-    })
+    })();
+    //
+    // Check for diagonal matches
+    (function checkDiag() {
+
+    })();
 }
 
-function setArray0(){
-    for(i = 0; i < gameBoard.board[0].length; i++)
-    gameBoard.board[0][i] = "x"
+
+
+// debugging junk
+function setArrayX() {
+    for (i = 0; i < gameBoard.board[0].length; i++)
+        gameBoard.board[0][i] = "x"
 }
+function setArrayY() {
+    for (i = 0; i < gameBoard.board[0].length; i++)
+        gameBoard.board[i][1] = "x"
+}
+function setArrayDiag() {
+    for (i = 0; i < gameBoard.board[0].length; i++)
+        gameBoard.board[i][i] = "x"
+}
+
