@@ -16,11 +16,10 @@ const gameBoard = (function createGameBoard(size) {
         }
         board.push(boardRow)
     }
-
+    // Status Functions
     const checkForWin = function checkForWin(marker) {
         const gameBoardLength = gameBoard.board.length;
         let winner = false;
-
         // check all horizontal matches
         (function checkX() {
             gameBoard.board.forEach(function (array) {
@@ -78,9 +77,18 @@ const gameBoard = (function createGameBoard(size) {
         })();
         return (winner);
     }
-
-    return { board, checkForWin }
-
+    const fullBoard = function boardFull() {
+        let fullStatus = true
+        gameBoard.board.forEach(function (array) {
+            array.forEach(function (mark) {
+                if (mark === 0) {
+                    fullStatus = false;
+                }
+            })
+        })
+        return (fullStatus)
+    }
+    return { board, checkForWin, fullBoard }
 })(3)
 
 
@@ -91,16 +99,26 @@ const gameBoard = (function createGameBoard(size) {
 
 // debugging junk
 function setArrayX() {
-    for (i = 0; i < gameBoard.board[0].length; i++)
+    for (i = 0; i < gameBoard.board[0].length; i++) {
         gameBoard.board[0][i] = "x"
+    }
 }
 function setArrayY() {
-    for (i = 0; i < gameBoard.board[0].length; i++)
+    for (i = 0; i < gameBoard.board[0].length; i++){
         gameBoard.board[i][1] = "x"
+    }
+        
 }
 function setArrayDiag() {
     for (i = 0; i < gameBoard.board[0].length; i++)
         gameBoard.board[i][i] = "x"
+}
+function fillBoard() {
+    for( i =0; i < gameBoard.board.length; i++){
+        for(j = 0; j < gameBoard.board.length; j++){
+            gameBoard.board[i][j] = "o"
+        }
+    }
 }
 // useless Calls
 console.log(gameBoard.board)
