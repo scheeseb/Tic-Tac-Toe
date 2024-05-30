@@ -19,28 +19,27 @@ const gameBoard = (function createGameBoard(size) {
 
     const checkForWin = function checkForWin(marker) {
         const gameBoardLength = gameBoard.board.length;
-    
+        let winner = false;
+
         // check all horizontal matches
         (function checkX() {
             gameBoard.board.forEach(function (array) {
                 let hitStatus = 0;
-    
+
                 array.forEach(function (mark) {
                     if (mark === marker) {
                         hitStatus++
                     }
                 })
-    
                 if (hitStatus === array.length) {
-                    console.log("True X axis")
-                    return true;
+                    winner = true;
                 }
             })
         })();
         // 
         // Check Vertical for matches
         (function checkY() {
-    
+
             for (i = 0; i < gameBoardLength; i++) {
                 let hitStatus = 0;
                 for (j = 0; j < gameBoardLength; j++) {
@@ -48,7 +47,7 @@ const gameBoard = (function createGameBoard(size) {
                         hitStatus++
                     }
                     if (hitStatus === gameBoardLength) {
-                        return true;
+                        winner = true;
                     }
                 }
             }
@@ -56,6 +55,7 @@ const gameBoard = (function createGameBoard(size) {
         //
         // Check for diagonal matches
         (function checkDiag() {
+            // Top left to bottom right
             let hitStatusT = 0;
             for (i = 0; i < gameBoardLength; i++) {
                 if (gameBoard.board[i][i] === marker) {
@@ -63,7 +63,7 @@ const gameBoard = (function createGameBoard(size) {
                 }
             }
             if (hitStatusT === gameBoardLength) {
-                return true;
+                winner = true;
             }
             let hitStatusB = 0;
             // Bottom Left to Top right
@@ -73,80 +73,19 @@ const gameBoard = (function createGameBoard(size) {
                 }
             }
             if (hitStatusB === gameBoardLength) {
-                return true;
-            }else {return false}
+                winner = true;
+            }
         })();
+        return (winner);
     }
 
     return { board, checkForWin }
 
 })(3)
-console.log(gameBoard.board)
 
 
-function checkForWin(marker) {
-    const gameBoardLength = gameBoard.board.length;
 
-    // check all horizontal matches
-    (function checkX() {
-        gameBoard.board.forEach(function (array) {
-            let hitStatus = 0;
 
-            array.forEach(function (mark) {
-                if (mark === marker) {
-                    hitStatus++
-                }
-            })
-
-            if (hitStatus === array.length) {
-                console.log("True X axis")
-                return true;
-            }
-        })
-    })();
-    // 
-    // Check Vertical for matches
-    (function checkY() {
-
-        for (i = 0; i < gameBoardLength; i++) {
-            let hitStatus = 0;
-            for (j = 0; j < gameBoardLength; j++) {
-                if (gameBoard.board[j][i] === marker) {
-                    hitStatus++
-                }
-                if (hitStatus === gameBoardLength) {
-                    console.log('True Y axis');
-                    return true;
-                } else if(i === gameBoardLength){
-                    return false
-                }
-            }
-        }
-    })();
-    //
-    // Check for diagonal matches
-    (function checkDiag() {
-        let hitStatusT = 0;
-        for (i = 0; i < gameBoardLength; i++) {
-            if (gameBoard.board[i][i] === marker) {
-                hitStatusT++;
-            }
-        }
-        if (hitStatusT === gameBoardLength) {
-            return true;
-        }
-        let hitStatusB = 0;
-        // Bottom Left to Top right
-        for (i = 0; i < gameBoardLength; i++) {
-            if (gameBoard.board[gameBoardLength - i - 1][i] === marker) {
-                hitStatusB++
-            }
-        }
-        if (hitStatusB === gameBoardLength) {
-            return true;
-        }else {return false}
-    })();
-}
 
 
 
@@ -163,4 +102,6 @@ function setArrayDiag() {
     for (i = 0; i < gameBoard.board[0].length; i++)
         gameBoard.board[i][i] = "x"
 }
+// useless Calls
+console.log(gameBoard.board)
 
