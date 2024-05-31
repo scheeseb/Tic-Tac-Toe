@@ -12,12 +12,13 @@ const gameBoard = (function createGameBoard(size) {
     for (i = 0; i < size; i++) {
         const boardRow = []
         for (s = 0; s < size; s++) {
-            boardRow.push(0)
+            boardRow.push(0);
         }
-        board.push(boardRow)
+        board.push(boardRow);
     }
     // Status Functions
     const checkForWin = function checkForWin(marker) {
+        const theBoard = gameBoard.board;
         const gameBoardLength = gameBoard.board.length;
         let winner = false;
         // check all horizontal matches
@@ -27,7 +28,7 @@ const gameBoard = (function createGameBoard(size) {
 
                 array.forEach(function (mark) {
                     if (mark === marker) {
-                        hitStatus++
+                        hitStatus++;
                     }
                 })
                 if (hitStatus === array.length) {
@@ -78,7 +79,7 @@ const gameBoard = (function createGameBoard(size) {
         return (winner);
     }
     const fullBoard = function boardFull() {
-        let fullStatus = true
+        let fullStatus = true;
         gameBoard.board.forEach(function (array) {
             array.forEach(function (mark) {
                 if (mark === 0) {
@@ -88,8 +89,84 @@ const gameBoard = (function createGameBoard(size) {
         })
         return (fullStatus)
     }
-    return { board, checkForWin, fullBoard }
-})(3)
+
+    return { board, checkForWin, fullBoard}
+})(3);
+
+const ai = function () {
+    const theBoard = gameBoard.board;
+    const gameBoardLength = theBoard.length;
+    
+    const checkForOpenLanes = function (y, x) {
+        let hits = 0;
+        (function lookRight(y, x) {
+            let clear = true;
+            for (let i = 0; i < gameBoardLength; i++) {
+                if (x <= gameBoardLength && theBoard[y][x] === 0) {
+                    x++;
+                } else {
+                    clear = false;
+                }
+            }
+            if (clear === true){
+                hits++;
+                console.log("Right")
+            }
+        })(y,x);
+
+        (function lookLeft(y, x) {
+            let clear = true;
+            for (let i = 0; i < gameBoardLength; i++) {
+                if ( x >= 0 && theBoard[y][x] === 0) {
+                    x--;
+                } else {
+                    clear = false;
+                }
+            }
+            if (clear === true){
+                hits++;
+                console.log("Left")
+            }
+        })(y,x);
+
+        (function lookUp(y, x) {
+            let clear = true;
+            for (let i = 0; i < gameBoardLength; i++) {
+                if ( y >= 0 && theBoard[y][x] === 0) {
+                    y--;
+                } else {
+                    clear = false;
+                }
+            }
+            if (clear === true){
+                hits++;
+                console.log("Up")
+            }
+            console.log(clear)
+        })(y,x);
+
+        (function lookDown(y, x) {
+            let clear = true;
+            for (let i = 0; i < gameBoardLength; i++) {
+                if ( y < gameBoardLength && theBoard[y][x] === 0) {
+                    y++;
+                } else {
+                    clear = false;
+                }
+            }
+            if (clear === true){
+                hits++;
+                console.log("Down")
+            }
+        })(y,x);
+
+        return (hits);
+    }
+    return {checkForOpenLanes}
+}
+
+
+
 
 
 
@@ -104,18 +181,18 @@ function setArrayX() {
     }
 }
 function setArrayY() {
-    for (i = 0; i < gameBoard.board[0].length; i++){
+    for (i = 0; i < gameBoard.board[0].length; i++) {
         gameBoard.board[i][1] = "x"
     }
-        
+
 }
 function setArrayDiag() {
     for (i = 0; i < gameBoard.board[0].length; i++)
         gameBoard.board[i][i] = "x"
 }
 function fillBoard() {
-    for( i =0; i < gameBoard.board.length; i++){
-        for(j = 0; j < gameBoard.board.length; j++){
+    for (i = 0; i < gameBoard.board.length; i++) {
+        for (j = 0; j < gameBoard.board.length; j++) {
             gameBoard.board[i][j] = "o"
         }
     }
