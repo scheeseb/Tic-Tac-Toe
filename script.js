@@ -90,79 +90,75 @@ const gameBoard = (function createGameBoard(size) {
         return (fullStatus)
     }
 
-    return { board, checkForWin, fullBoard}
+    return { board, checkForWin, fullBoard }
 })(3);
 
 const ai = function () {
     const theBoard = gameBoard.board;
     const gameBoardLength = theBoard.length;
-    
+
     const checkForOpenLanes = function (y, x) {
         let hits = 0;
-        (function lookRight(y, x) {
-            let clear = true;
-            for (let i = 0; i < gameBoardLength; i++) {
-                if (x <= gameBoardLength && theBoard[y][x] === 0) {
-                    x++;
-                } else {
-                    clear = false;
-                }
-            }
-            if (clear === true){
-                hits++;
-                console.log("Right")
-            }
-        })(y,x);
 
-        (function lookLeft(y, x) {
+        (function checkColoumn(y, x) {
             let clear = true;
             for (let i = 0; i < gameBoardLength; i++) {
-                if ( x >= 0 && theBoard[y][x] === 0) {
-                    x--;
-                } else {
+                if (theBoard[i][x] != 0) {
                     clear = false;
                 }
             }
-            if (clear === true){
+            if (clear === true) {
                 hits++;
-                console.log("Left")
+                console.log("Coloumn")
             }
-        })(y,x);
+        })(y, x);
+        (function checkRow(y, x) {
+            let clear = true;
+            for (let i = 0; i < gameBoardLength; i++) {
+                if (theBoard[y][i] != 0) {
+                    clear = false;
+                }
+            }
+            if (clear === true) {
+                hits++;
+                console.log("Row")
+            }
+        })(y, x);
+        (function checkDiag(y, x) {
+            let clearT = true;
+            let onDiagT = false;
+            for (i = 0; i < gameBoardLength; i++) {
+                if (i === x && i === y) {
+                    onDiagT = true
+                }
+                if (gameBoard.board[i][i] != 0) {
+                    clearT = false;
+                }
+            }
+            if (clearT === true && onDiagT === true) {
+                hits++;
+                console.log("DiagT")
+            }
 
-        (function lookUp(y, x) {
-            let clear = true;
-            for (let i = 0; i < gameBoardLength; i++) {
-                if ( y >= 0 && theBoard[y][x] === 0) {
-                    y--;
-                } else {
-                    clear = false;
+            let clearB = true;
+            let onDiagB = false;
+            for (i = 0; i < gameBoardLength; i++) {
+                if (i === x && gameBoardLength - i - 1 === y) {
+                    onDiagB = true
+                }
+                if (gameBoard.board[gameBoardLength - i - 1][i] != 0) {
+                    clearB = false;
                 }
             }
-            if (clear === true){
+            if (clearB === true && onDiagB === true) {
                 hits++;
-                console.log("Up")
+                console.log("DiagB")
             }
-            console.log(clear)
-        })(y,x);
-
-        (function lookDown(y, x) {
-            let clear = true;
-            for (let i = 0; i < gameBoardLength; i++) {
-                if ( y < gameBoardLength && theBoard[y][x] === 0) {
-                    y++;
-                } else {
-                    clear = false;
-                }
-            }
-            if (clear === true){
-                hits++;
-                console.log("Down")
-            }
-        })(y,x);
+        })(y, x)
 
         return (hits);
     }
-    return {checkForOpenLanes}
+    return { checkForOpenLanes }
 }
 
 
