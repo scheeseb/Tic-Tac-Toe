@@ -100,10 +100,10 @@ const ai = function () {
     const checkForOpenLanes = function (y, x) {
         let hits = 0;
 
-        (function checkColoumn(y, x) {
+        (function checkColoumn(x) {
             let clear = true;
             for (let i = 0; i < gameBoardLength; i++) {
-                if (theBoard[i][x] != 0) {
+                if (theBoard[i][x] !== 0) {
                     clear = false;
                 }
             }
@@ -111,8 +111,8 @@ const ai = function () {
                 hits++;
                 console.log("Coloumn")
             }
-        })(y, x);
-        (function checkRow(y, x) {
+        })(x);
+        (function checkRow(y) {
             let clear = true;
             for (let i = 0; i < gameBoardLength; i++) {
                 if (theBoard[y][i] != 0) {
@@ -123,7 +123,7 @@ const ai = function () {
                 hits++;
                 console.log("Row")
             }
-        })(y, x);
+        })(y);
         (function checkDiag(y, x) {
             let clearT = true;
             let onDiagT = false;
