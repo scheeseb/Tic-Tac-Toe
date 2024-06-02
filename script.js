@@ -158,7 +158,84 @@ const ai = function () {
 
         return (hits);
     }
-    return { checkForOpenLanes }
+    const winImminent = function (y, x, marker) {
+        let marks = 0;
+        let yCoordinate = 0;
+        let XCoordinate = 0;
+        let winImminent = false;
+        (function checkColoumn(x) {
+            for (let i = 0; i < gameBoardLength; i++) {
+                if (theBoard[i][x] === marker) {
+                    marks++
+                } else if (theBoard[i][x] === 0) {
+                    yCoordinate = i;
+                    XCoordinate = x
+                } else {
+                    return (winImminent = false)
+                }
+            }
+            if (marks === gameBoardLength - 1) {
+                console.log("true")
+                return (winImminent = true)
+            } else {
+                console.log('false')
+                return (winImminent = false)
+            }
+        })(x);
+        (function checkColoumn(y) {
+            for (let i = 0; i < gameBoardLength; i++) {
+                if (theBoard[y][i] === marker) {
+                    marks++
+                } else if (theBoard[y][i] === 0) {
+                    yCoordinate = i;
+                    XCoordinate = x
+                } else {
+                    return (winImminent = false)
+                }
+            }
+            if (marks === gameBoardLength - 1) {
+                console.log("true")
+                return (winImminent = true)
+            } else {
+                console.log('false')
+                return (winImminent = false)
+            }
+        })(y);
+        // (function checkDiag(y, x) {
+        //     let clearT = true;
+        //     let onDiagT = false;
+        //     for (i = 0; i < gameBoardLength; i++) {
+        //         if (i === x && i === y) {
+        //             onDiagT = true
+        //         }
+        //         if (gameBoard.board[i][i] != 0) {
+        //             clearT = false;
+        //         }
+        //     }
+        //     if (clearT === true && onDiagT === true) {
+        //         hits++;
+        //         console.log("DiagT")
+        //     }
+
+        //     let clearB = true;
+        //     let onDiagB = false;
+        //     for (i = 0; i < gameBoardLength; i++) {
+        //         if (i === x && gameBoardLength - i - 1 === y) {
+        //             onDiagB = true
+        //         }
+        //         if (gameBoard.board[gameBoardLength - i - 1][i] != 0) {
+        //             clearB = false;
+        //         }
+        //     }
+        //     if (clearB === true && onDiagB === true) {
+        //         hits++;
+        //         console.log("DiagB")
+        //     }
+        // })
+        return (winImminent)
+    }
+
+    return { checkForOpenLanes, winImminent }
 }
 
 
@@ -192,6 +269,9 @@ function fillBoard() {
             gameBoard.board[i][j] = "o"
         }
     }
+}
+function hitTarget(y, x) {
+    gameBoard.board[y][x] = "x"
 }
 // useless Calls
 console.log(gameBoard.board)
