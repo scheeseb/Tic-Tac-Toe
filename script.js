@@ -159,79 +159,82 @@ const ai = function () {
         return (hits);
     }
     const winImminent = function (y, x, marker) {
-        let marks = 0;
-        let yCoordinate = 0;
-        let XCoordinate = 0;
+
         let winImminent = false;
+
         (function checkColoumn(x) {
+            let marks = 0;
             for (let i = 0; i < gameBoardLength; i++) {
                 if (theBoard[i][x] === marker) {
                     marks++
-                } else if (theBoard[i][x] === 0) {
-                    yCoordinate = i;
-                    XCoordinate = x
-                } else {
+                } else if (theBoard[i][x] != 0) {
                     return (winImminent = false)
                 }
             }
             if (marks === gameBoardLength - 1) {
-                console.log("true")
                 return (winImminent = true)
             } else {
-                console.log('false')
                 return (winImminent = false)
             }
         })(x);
         (function checkColoumn(y) {
+            let marks = 0;
+
             for (let i = 0; i < gameBoardLength; i++) {
                 if (theBoard[y][i] === marker) {
                     marks++
-                } else if (theBoard[y][i] === 0) {
-                    yCoordinate = i;
-                    XCoordinate = x
-                } else {
+                } else if (theBoard[y][i] != 0) {
                     return (winImminent = false)
                 }
             }
             if (marks === gameBoardLength - 1) {
-                console.log("true")
                 return (winImminent = true)
             } else {
-                console.log('false')
                 return (winImminent = false)
             }
         })(y);
-        // (function checkDiag(y, x) {
-        //     let clearT = true;
-        //     let onDiagT = false;
-        //     for (i = 0; i < gameBoardLength; i++) {
-        //         if (i === x && i === y) {
-        //             onDiagT = true
-        //         }
-        //         if (gameBoard.board[i][i] != 0) {
-        //             clearT = false;
-        //         }
-        //     }
-        //     if (clearT === true && onDiagT === true) {
-        //         hits++;
-        //         console.log("DiagT")
-        //     }
+        (function checkDiagT(y, x) {
+            let marks = 0;
+            let onDiagT = false;
 
-        //     let clearB = true;
-        //     let onDiagB = false;
-        //     for (i = 0; i < gameBoardLength; i++) {
-        //         if (i === x && gameBoardLength - i - 1 === y) {
-        //             onDiagB = true
-        //         }
-        //         if (gameBoard.board[gameBoardLength - i - 1][i] != 0) {
-        //             clearB = false;
-        //         }
-        //     }
-        //     if (clearB === true && onDiagB === true) {
-        //         hits++;
-        //         console.log("DiagB")
-        //     }
-        // })
+            for (i = 0; i < gameBoardLength; i++) {
+                if (i === x && i === y) {
+                    onDiagT = true
+                }
+                if (gameBoard.board[i][i] === marker) {
+                    marks++
+                } else if (gameBoard.board[i][i] != 0) {
+                    return (winImminent = false)
+                }
+            }
+            if (marks === (gameBoardLength - 1) && onDiagT === true) {
+                return (winImminent = true)
+            } else {
+                return (winImminent = false)
+            }
+        })(y, x);
+        (function checkDiagB(y, x) {
+            let marks = 0;
+            let onDiag = false;
+
+            for (i = 0; i < gameBoardLength; i++) {
+                if ((gameBoardLength - i - 1) === x && i === y) {
+                    onDiag = true
+                }
+                if (gameBoard.board[gameBoardLength - i - 1][i] === marker) {
+                    marks++
+                } else if (gameBoard.board[gameBoardLength - i - 1][i] != 0) {
+                    return (winImminent = false)
+                }
+            }
+            if (marks === (gameBoardLength - 1) && onDiag === true) {
+                return (winImminent = true)
+            } else {
+                return (winImminent = false)
+            }
+        })(y, x);
+            
+
         return (winImminent)
     }
 
