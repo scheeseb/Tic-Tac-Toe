@@ -158,7 +158,7 @@ const ai = function () {
 
         return (hits);
     }
-    const winImminent = function (y, x, marker) {
+    const isImminentWin = function (y, x, marker) {
 
         let winImminent = false;
 
@@ -233,12 +233,82 @@ const ai = function () {
                 return (winImminent = false)
             }
         })(y, x);
-            
+
 
         return (winImminent)
     }
+    const isOpenMiddle = function (y, x) {
+        if (y === (gameBoardLength - 1) / 2 && x === (gameBoardLength - 1) / 2 && theBoard[y][x] === 0) {
+            return true;
+        } else { return false }
+    }
+    const isOpenCorner = function (y, x) {
+        //These are all the corners on any board
+        const cornerA = [0, 0];
+        const cornerB = [0, (gameBoardLength - 1)];
+        const cornerC = [(gameBoardLength - 1), 0];
+        const cornerD = [(gameBoardLength - 1) , (gameBoardLength - 1)];
+        
+       
 
-    return { checkForOpenLanes, winImminent }
+        if (theBoard[y][x] != 0){
+            return false;
+        }
+        if (y === cornerA[0] && x === cornerA[1]){
+            return true;
+        }else if (y === cornerB[0] && x === cornerB[1]){
+            console.log("corner B")
+            return true;
+        }else if (y === cornerC[0] && x === cornerC[1]){
+            console.log("corner C")
+            return true;
+        }else if (y === cornerD[0] && x === cornerD[1]){
+            console.log("corner D")
+            return true;
+        }else {
+            return false;
+        }
+    }
+    const oppositeCornerTaken = function (y , x) {
+        const cornerA = [0, 0];
+        const cornerB = [0, (gameBoardLength - 1)];
+        const cornerC = [(gameBoardLength - 1), 0];
+        const cornerD = [(gameBoardLength - 1) , (gameBoardLength - 1)];
+        
+
+        if (theBoard[y][x] != 0){
+            return false;
+        }
+
+        if (y === cornerA[0] && x === cornerA[1]){
+            if (theBoard[cornerD[0]][cornerD[1]] != 0){
+                console.log("Im A. D us taken")
+                return true
+            }else {
+                return false
+            }
+        }else if (y === cornerB[0] && x === cornerB[1]){
+            if (theBoard[cornerC[0]][cornerC[1]] != 0){
+                console.log("Im B. C us taken");
+                return true
+            }
+        }else if (y === cornerC[0] && x === cornerC[1]){
+            if (theBoard[cornerB[0]][cornerB[1]] != 0){
+                console.log("Im C. B us taken");
+                return true
+            }
+        }else if (y === cornerD[0] && x === cornerD[1]){
+            if (theBoard[cornerA[0]][cornerA[1]] != 0){
+                console.log("Im D. A us taken");
+                return true
+            }
+        }else {
+            return false;
+        }
+        
+    }
+
+    return { checkForOpenLanes, isImminentWin, isOpenMiddle, isOpenCorner, oppositeCornerTaken }
 }
 
 
