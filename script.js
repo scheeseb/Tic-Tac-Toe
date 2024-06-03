@@ -8,16 +8,19 @@ function createPlayer(inputtedName) {
 }
 
 const gameBoard = (function createGameBoard(size) {
+    // creates gameBoard
     const board = [];
-    for (i = 0; i < size; i++) {
-        const boardRow = []
-        for (s = 0; s < size; s++) {
-            boardRow.push(0);
+    const createBoard = (function () {
+        for (i = 0; i < size; i++) {
+            const boardRow = []
+            for (s = 0; s < size; s++) {
+                boardRow.push(0);
+            }
+            board.push(boardRow);
         }
-        board.push(boardRow);
-    }
+    })()
     // Status Functions
-    const checkForWin = function checkForWin(marker) {
+    const checkWin = function (marker) {
         const theBoard = gameBoard.board;
         const gameBoardLength = gameBoard.board.length;
         let winner = false;
@@ -78,7 +81,7 @@ const gameBoard = (function createGameBoard(size) {
         })();
         return (winner);
     }
-    const fullBoard = function boardFull() {
+    const checkFullBoard = function () {
         let fullStatus = true;
         gameBoard.board.forEach(function (array) {
             array.forEach(function (mark) {
@@ -89,8 +92,11 @@ const gameBoard = (function createGameBoard(size) {
         })
         return (fullStatus)
     }
+    const placeMarker = function (y, x, marker) {
+        gameBoard.board[y][x] = marker;
+    };
 
-    return { board, checkForWin, fullBoard }
+    return { board, checkWin, checkFullBoard, placeMarker }
 })(3);
 
 const ai = function () {
@@ -157,6 +163,13 @@ const ai = function () {
         })(y, x)
 
         return (hits);
+    }
+    const createsABridge = function (y, x) {
+        if (checkForOpenLanes(y, x) > 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
     const isImminentWin = function (y, x, marker) {
 
@@ -247,68 +260,100 @@ const ai = function () {
         const cornerA = [0, 0];
         const cornerB = [0, (gameBoardLength - 1)];
         const cornerC = [(gameBoardLength - 1), 0];
-        const cornerD = [(gameBoardLength - 1) , (gameBoardLength - 1)];
-        
-       
+        const cornerD = [(gameBoardLength - 1), (gameBoardLength - 1)];
 
-        if (theBoard[y][x] != 0){
+
+
+        if (theBoard[y][x] != 0) {
             return false;
         }
-        if (y === cornerA[0] && x === cornerA[1]){
+        if (y === cornerA[0] && x === cornerA[1]) {
             return true;
-        }else if (y === cornerB[0] && x === cornerB[1]){
+        } else if (y === cornerB[0] && x === cornerB[1]) {
             console.log("corner B")
             return true;
-        }else if (y === cornerC[0] && x === cornerC[1]){
+        } else if (y === cornerC[0] && x === cornerC[1]) {
             console.log("corner C")
             return true;
-        }else if (y === cornerD[0] && x === cornerD[1]){
+        } else if (y === cornerD[0] && x === cornerD[1]) {
             console.log("corner D")
             return true;
-        }else {
+        } else {
             return false;
         }
     }
-    const oppositeCornerTaken = function (y , x) {
+    const oppositeCornerTaken = function (y, x) {
         const cornerA = [0, 0];
         const cornerB = [0, (gameBoardLength - 1)];
         const cornerC = [(gameBoardLength - 1), 0];
-        const cornerD = [(gameBoardLength - 1) , (gameBoardLength - 1)];
-        
+        const cornerD = [(gameBoardLength - 1), (gameBoardLength - 1)];
 
-        if (theBoard[y][x] != 0){
+
+        if (theBoard[y][x] != 0) {
             return false;
         }
 
-        if (y === cornerA[0] && x === cornerA[1]){
-            if (theBoard[cornerD[0]][cornerD[1]] != 0){
+        if (y === cornerA[0] && x === cornerA[1]) {
+            if (theBoard[cornerD[0]][cornerD[1]] != 0) {
                 console.log("Im A. D us taken")
                 return true
-            }else {
+            } else {
                 return false
             }
-        }else if (y === cornerB[0] && x === cornerB[1]){
-            if (theBoard[cornerC[0]][cornerC[1]] != 0){
+        } else if (y === cornerB[0] && x === cornerB[1]) {
+            if (theBoard[cornerC[0]][cornerC[1]] != 0) {
                 console.log("Im B. C us taken");
                 return true
             }
-        }else if (y === cornerC[0] && x === cornerC[1]){
-            if (theBoard[cornerB[0]][cornerB[1]] != 0){
+        } else if (y === cornerC[0] && x === cornerC[1]) {
+            if (theBoard[cornerB[0]][cornerB[1]] != 0) {
                 console.log("Im C. B us taken");
                 return true
             }
-        }else if (y === cornerD[0] && x === cornerD[1]){
-            if (theBoard[cornerA[0]][cornerA[1]] != 0){
+        } else if (y === cornerD[0] && x === cornerD[1]) {
+            if (theBoard[cornerA[0]][cornerA[1]] != 0) {
                 console.log("Im D. A us taken");
                 return true
             }
-        }else {
+        } else {
             return false;
         }
-        
-    }
 
-    return { checkForOpenLanes, isImminentWin, isOpenMiddle, isOpenCorner, oppositeCornerTaken }
+    }
+    const isOpen = function (y, x) {
+        if (theBoard[y][x] === 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    const hitTargetIf = function (callback, marker) {
+        for (let i = 0; i < gameBoardLength; i++) {
+            for (let j = 0; j < gameBoardLength; j++) {
+                if (callback(i, j, marker)) {
+                    gameBoard.placeMarker(i, j, marker);
+                    return true
+                }
+            }
+        }
+        return false;
+    }
+    const pickBestSpot = function (marker) {
+        if (hitTargetIf(isImminentWin, marker)) return true;
+        if (hitTargetIf(isOpenMiddle, marker)) return true;
+        for (let i = 0; i < gameBoardLength; i++) {
+            for (j = 0; j < gameBoardLength; j++) {
+                if (isOpenCorner(i, j) && oppositeCornerTaken(i, j)) {
+                    gameBoard.placeMarker(i, j, marker);
+                    return true
+                };
+            };
+        };
+        if (hitTargetIf(isOpenCorner, marker)) return true;
+        if (hitTargetIf(createsABridge, marker)) return true;
+        if (hitTargetIf(isOpen, marker)) return true;
+    };
+    return { pickBestSpot, hitTargetIf, isOpenCorner }
 }
 
 
