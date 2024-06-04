@@ -121,7 +121,7 @@ const ai = function () {
         (function checkRow(y) {
             let clear = true;
             for (let i = 0; i < gameBoardLength; i++) {
-                if (theBoard[y][i] != 0) {
+                if (theBoard[y][i] !== 0) {
                     clear = false;
                 }
             }
@@ -137,7 +137,7 @@ const ai = function () {
                 if (i === x && i === y) {
                     onDiagT = true
                 }
-                if (gameBoard.board[i][i] != 0) {
+                if (gameBoard.board[i][i] !== 0) {
                     clearT = false;
                 }
             }
@@ -152,7 +152,7 @@ const ai = function () {
                 if (i === x && gameBoardLength - i - 1 === y) {
                     onDiagB = true
                 }
-                if (gameBoard.board[gameBoardLength - i - 1][i] != 0) {
+                if (gameBoard.board[gameBoardLength - i - 1][i] !== 0) {
                     clearB = false;
                 }
             }
@@ -164,98 +164,85 @@ const ai = function () {
 
         return (hits);
     }
-    const createsABridge = function (y, x) {
+    function createsABridge (y, x) {
         if (checkForOpenLanes(y, x) > 1) {
             return true;
         } else {
             return false;
         }
     }
-    const isImminentWin = function (y, x, marker) {
+    function isImminentWin (y, x, marker) {
 
         let winImminent = false;
 
-        (function checkColoumn(x) {
+        function checkColumn(x) {
             let marks = 0;
             for (let i = 0; i < gameBoardLength; i++) {
                 if (theBoard[i][x] === marker) {
                     marks++
-                } else if (theBoard[i][x] != 0) {
-                    return (winImminent = false)
+                } else if (theBoard[i][x] !== 0) {
+                    return false
                 }
             }
-            if (marks === gameBoardLength - 1) {
-                return (winImminent = true)
-            } else {
-                return (winImminent = false)
-            }
-        })(x);
-        (function checkColoumn(y) {
+            return marks === gameBoardLength - 1;
+        };
+        function checkRow(y) {
             let marks = 0;
 
             for (let i = 0; i < gameBoardLength; i++) {
                 if (theBoard[y][i] === marker) {
                     marks++
-                } else if (theBoard[y][i] != 0) {
-                    return (winImminent = false)
+                } else if (theBoard[y][i] !== 0) {
+                    return false
                 }
             }
-            if (marks === gameBoardLength - 1) {
-                return (winImminent = true)
-            } else {
-                return (winImminent = false)
-            }
-        })(y);
-        (function checkDiagT(y, x) {
-            let marks = 0;
-            let onDiagT = false;
-
-            for (i = 0; i < gameBoardLength; i++) {
-                if (i === x && i === y) {
-                    onDiagT = true
-                }
-                if (gameBoard.board[i][i] === marker) {
-                    marks++
-                } else if (gameBoard.board[i][i] != 0) {
-                    return (winImminent = false)
-                }
-            }
-            if (marks === (gameBoardLength - 1) && onDiagT === true) {
-                return (winImminent = true)
-            } else {
-                return (winImminent = false)
-            }
-        })(y, x);
-        (function checkDiagB(y, x) {
+            return marks === gameBoardLength - 1;
+        }
+        function checkDiagT(y, x) {
             let marks = 0;
             let onDiag = false;
 
-            for (i = 0; i < gameBoardLength; i++) {
+            for (let i = 0; i < gameBoardLength; i++) {
+                if (i === x && i === y) {
+                    onDiag = true
+                }
+                if (gameBoard.board[i][i] === marker) {
+                    marks++
+                } else if (gameBoard.board[i][i] !== 0) {
+                    return false
+                }
+            }
+            return marks === gameBoardLength - 1 && onDiag;
+        }
+        function checkDiagB(y, x) {
+            let marks = 0;
+            let onDiag = false;
+
+            for (let i = 0; i < gameBoardLength; i++) {
                 if ((gameBoardLength - i - 1) === x && i === y) {
                     onDiag = true
                 }
                 if (gameBoard.board[gameBoardLength - i - 1][i] === marker) {
                     marks++
-                } else if (gameBoard.board[gameBoardLength - i - 1][i] != 0) {
-                    return (winImminent = false)
+                } else if (gameBoard.board[gameBoardLength - i - 1][i] !== 0) {
+                    return false
                 }
             }
-            if (marks === (gameBoardLength - 1) && onDiag === true) {
-                return (winImminent = true)
-            } else {
-                return (winImminent = false)
-            }
-        })(y, x);
+            return marks === gameBoardLength - 1 && onDiag;
+        }
 
+        if (checkColumn(x) || checkRow(y) || checkDiagT(y, x) || checkDiagB(y, x)) {
+            winImminent = true;
+        }
 
         return (winImminent)
     }
-    const isOpenMiddle = function (y, x) {
+    function isOpenMiddle (y, x) {
         if (y === (gameBoardLength - 1) / 2 && x === (gameBoardLength - 1) / 2 && theBoard[y][x] === 0) {
             return true;
         } else { return false }
     }
-    const isOpenCorner = function (y, x) {
+    function isOpenCorner (y, x) {
         //These are all the corners on any board
         const cornerA = [0, 0];
         const cornerB = [0, (gameBoardLength - 1)];
@@ -264,7 +251,7 @@ const ai = function () {
 
 
 
-        if (theBoard[y][x] != 0) {
+        if (theBoard[y][x] !== 0) {
             return false;
         }
         if (y === cornerA[0] && x === cornerA[1]) {
@@ -282,36 +269,36 @@ const ai = function () {
             return false;
         }
     }
-    const oppositeCornerTaken = function (y, x) {
+    function oppositeCornerTaken (y, x) {
         const cornerA = [0, 0];
         const cornerB = [0, (gameBoardLength - 1)];
         const cornerC = [(gameBoardLength - 1), 0];
         const cornerD = [(gameBoardLength - 1), (gameBoardLength - 1)];
 
 
-        if (theBoard[y][x] != 0) {
+        if (theBoard[y][x] !== 0) {
             return false;
         }
 
         if (y === cornerA[0] && x === cornerA[1]) {
-            if (theBoard[cornerD[0]][cornerD[1]] != 0) {
+            if (theBoard[cornerD[0]][cornerD[1]] !== 0) {
                 console.log("Im A. D us taken")
                 return true
             } else {
                 return false
             }
         } else if (y === cornerB[0] && x === cornerB[1]) {
-            if (theBoard[cornerC[0]][cornerC[1]] != 0) {
+            if (theBoard[cornerC[0]][cornerC[1]] !== 0) {
                 console.log("Im B. C us taken");
                 return true
             }
         } else if (y === cornerC[0] && x === cornerC[1]) {
-            if (theBoard[cornerB[0]][cornerB[1]] != 0) {
+            if (theBoard[cornerB[0]][cornerB[1]] !== 0) {
                 console.log("Im C. B us taken");
                 return true
             }
         } else if (y === cornerD[0] && x === cornerD[1]) {
-            if (theBoard[cornerA[0]][cornerA[1]] != 0) {
+            if (theBoard[cornerA[0]][cornerA[1]] !== 0) {
                 console.log("Im D. A us taken");
                 return true
             }
@@ -320,17 +307,17 @@ const ai = function () {
         }
 
     }
-    const isOpen = function (y, x) {
+    function isOpen (y, x) {
         if (theBoard[y][x] === 0) {
             return true;
         } else {
             return false;
         }
     }
-    const hitTargetIf = function (callback, marker) {
+    function hitTargetIf(callback, marker) {
         for (let i = 0; i < gameBoardLength; i++) {
             for (let j = 0; j < gameBoardLength; j++) {
-                if (callback(i, j, marker)) {
+                if (callback(i, j, marker) && isOpen(i, j)) {
                     gameBoard.placeMarker(i, j, marker);
                     return true
                 }
@@ -339,21 +326,47 @@ const ai = function () {
         return false;
     }
     const pickBestSpot = function (marker) {
-        if (hitTargetIf(isImminentWin, marker)) return true;
-        if (hitTargetIf(isOpenMiddle, marker)) return true;
+        let opponentMarker = ""
+        if (marker === 'x'){
+            opponentMarker = 'o'
+        }else{
+            opponentMarker = 'x'
+        }
+        if (hitTargetIf(isImminentWin, marker)){
+            console.log("Imminent Win")
+            return true;
+        } 
+        if (hitTargetIf(isImminentWin, opponentMarker)){
+            console.log("Opponent Imminent Win")
+            return true;
+        } 
+        if (hitTargetIf(isOpenMiddle, marker)){
+            console.log("isOpenMiddle")
+            return true;
+        }
         for (let i = 0; i < gameBoardLength; i++) {
             for (j = 0; j < gameBoardLength; j++) {
                 if (isOpenCorner(i, j) && oppositeCornerTaken(i, j)) {
+                    console.log("Opposite Taken")
                     gameBoard.placeMarker(i, j, marker);
                     return true
                 };
             };
         };
-        if (hitTargetIf(isOpenCorner, marker)) return true;
-        if (hitTargetIf(createsABridge, marker)) return true;
-        if (hitTargetIf(isOpen, marker)) return true;
+        if (hitTargetIf(isOpenCorner, marker)){
+            console.log("isOpenCorner")
+            return true;
+        }
+        if (hitTargetIf(createsABridge, marker)){
+            console.log("createsABridge")
+            return true;
+        }
+        if (hitTargetIf(isOpen, marker)) {
+            console.log("isOpen")
+            return true;
+        }
     };
-    return { pickBestSpot, hitTargetIf, isOpenCorner }
+    return {pickBestSpot}
 }
 
 
