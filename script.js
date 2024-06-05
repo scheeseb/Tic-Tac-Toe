@@ -1,13 +1,15 @@
-function createPlayer(inputtedName) {
+function player(inputtedName, marker) {
     const name = inputtedName.slice(0, 1).toUpperCase() + inputtedName.slice(1);
     let score = 0;
+    const symbol = marker;
     const addPoint = function () { score++ }
     const getScore = function () { return score }
 
-    return { name, getScore, addPoint }
+    return { name, symbol, getScore, addPoint }
 }
 
-const gameBoard = (function createGameBoard(size) {
+
+const gameBoard = (function (size) {
     // creates gameBoard
     const board = [];
     const createBoard = (function () {
@@ -81,7 +83,7 @@ const gameBoard = (function createGameBoard(size) {
         })();
         return (winner);
     }
-    const checkFullBoard = function () {
+    const boardFull = function () {
         let fullStatus = true;
         gameBoard.board.forEach(function (array) {
             array.forEach(function (mark) {
@@ -96,7 +98,7 @@ const gameBoard = (function createGameBoard(size) {
         gameBoard.board[y][x] = marker;
     };
 
-    return { board, checkWin, checkFullBoard, placeMarker }
+    return { board, checkWin, boardFull, placeMarker }
 })(3);
 
 const ai = function () {
@@ -164,14 +166,14 @@ const ai = function () {
 
         return (hits);
     }
-    function createsABridge (y, x) {
+    function createsABridge(y, x) {
         if (checkForOpenLanes(y, x) > 1) {
             return true;
         } else {
             return false;
         }
     }
-    function isImminentWin (y, x, marker) {
+    function isImminentWin(y, x, marker) {
 
         let winImminent = false;
 
@@ -237,12 +239,12 @@ const ai = function () {
 
         return (winImminent)
     }
-    function isOpenMiddle (y, x) {
+    function isOpenMiddle(y, x) {
         if (y === (gameBoardLength - 1) / 2 && x === (gameBoardLength - 1) / 2 && theBoard[y][x] === 0) {
             return true;
         } else { return false }
     }
-    function isOpenCorner (y, x) {
+    function isOpenCorner(y, x) {
         //These are all the corners on any board
         const cornerA = [0, 0];
         const cornerB = [0, (gameBoardLength - 1)];
@@ -269,7 +271,7 @@ const ai = function () {
             return false;
         }
     }
-    function oppositeCornerTaken (y, x) {
+    function oppositeCornerTaken(y, x) {
         const cornerA = [0, 0];
         const cornerB = [0, (gameBoardLength - 1)];
         const cornerC = [(gameBoardLength - 1), 0];
@@ -307,7 +309,7 @@ const ai = function () {
         }
 
     }
-    function isOpen (y, x) {
+    function isOpen(y, x) {
         if (theBoard[y][x] === 0) {
             return true;
         } else {
@@ -327,20 +329,20 @@ const ai = function () {
     }
     const pickBestSpot = function (marker) {
         let opponentMarker = ""
-        if (marker === 'x'){
+        if (marker === 'x') {
             opponentMarker = 'o'
-        }else{
+        } else {
             opponentMarker = 'x'
         }
-        if (hitTargetIf(isImminentWin, marker)){
+        if (hitTargetIf(isImminentWin, marker)) {
             console.log("Imminent Win")
             return true;
-        } 
-        if (hitTargetIf(isImminentWin, opponentMarker)){
+        }
+        if (hitTargetIf(isImminentWin, opponentMarker)) {
             console.log("Opponent Imminent Win")
             return true;
-        } 
-        if (hitTargetIf(isOpenMiddle, marker)){
+        }
+        if (hitTargetIf(isOpenMiddle, marker)) {
             console.log("isOpenMiddle")
             return true;
         }
@@ -353,11 +355,11 @@ const ai = function () {
                 };
             };
         };
-        if (hitTargetIf(isOpenCorner, marker)){
+        if (hitTargetIf(isOpenCorner, marker)) {
             console.log("isOpenCorner")
             return true;
         }
-        if (hitTargetIf(createsABridge, marker)){
+        if (hitTargetIf(createsABridge, marker)) {
             console.log("createsABridge")
             return true;
         }
@@ -366,8 +368,55 @@ const ai = function () {
             return true;
         }
     };
-    return {pickBestSpot}
+    return { pickBestSpot }
 }
+const displayController = (function () {
+    const outerContainer = document.querySelector("#outer-container");
+    const theBoard = gameBoard.board;
+    const gameBoardLength = theBoard.length
+
+    const updateDisplay = function () {
+        const oldContainer = document.querySelector("#container");
+        if(oldContainer) {
+            outerContainer.removeChild(oldContainer);
+        }
+
+        const newContainer = document.createElement('div');
+        newContainer.id = "container"
+        outerContainer.append(newContainer)
+
+
+        for (let i = 0; i < gameBoardLength; i++) {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = "board-row";
+
+            for (let j = 0; j < gameBoardLength; j++) {
+                const playSpaceDiv = document.createElement('div');
+                playSpaceDiv.className = 'play-space';
+                playSpaceDiv.dataset.y = i;
+                playSpaceDiv.dataset.x = j;
+                playSpaceDiv.addEventListener('click', function () {
+                    gameBoard.placeMarker(i, j, 'x');
+                    updateDisplay()
+                })
+
+                if (theBoard[i][j] === "x") {
+                    playSpaceDiv.textContent = 'X';
+                } else if (theBoard[i][j] === "Y") {
+                    playSpaceDiv.textContent = "Y"
+                } else {
+                    playSpaceDiv.textContent = ""
+                }
+
+
+                rowDiv.append(playSpaceDiv);
+            }
+            newContainer.append(rowDiv)
+        }
+        outerContainer.append(newContainer)
+    };
+    return { updateDisplay }
+})();
 
 
 
@@ -376,8 +425,7 @@ const ai = function () {
 
 
 
-
-
+displayController.updateDisplay()
 // debugging junk
 function setArrayX() {
     for (i = 0; i < gameBoard.board[0].length; i++) {

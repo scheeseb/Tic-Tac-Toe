@@ -6,7 +6,7 @@
 }
 :root {
     --board-background: hsla(208, 92%, 90%, 0.65);
-    --lighter-background: hsla(208, 92%, 98%, 0.65);
+    --lighter-background: hsla(208, 92%, 95%, 0.8);
 }
 body {
     width: 100vw;
@@ -19,13 +19,36 @@ body {
     overflow: hidden;
     
     display: grid;
-    grid-template-rows: 6rem 1fr 3rem;
+    grid-template-rows: auto 1fr 3rem;
     gap: 4rem;
 }
 .header {
     background-color: var(--lighter-background);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
-.container {
+.header  h1 {
+    align-self: center;
+}
+
+    .player-info-container {
+        display: flex;
+        
+    }
+    .player-info-container * {
+        border-left: solid;
+        flex: 1;
+        font-size: min(4.5vw, 40px);
+        padding-left: .5rem;
+        margin-bottom: .2rem;
+    }
+#outer-container {
+    width: 100%;
+    height: 100%;
+    display: grid;
+}
+#container {
     background-color: var(--board-background);
     width: min(90%, 1000px);
     justify-self: center;
@@ -39,16 +62,16 @@ body {
         width: 100%;
         display: flex;
     }   
-        .container :first-child * {
+        #container :first-child * {
             border-top: none;
         }
-        .container * :last-child {
+        #container * :last-child {
             border-right: none;
         }
-        .container :last-child * {
+        #container :last-child * {
             border-bottom: none;
         }
-        .container * :first-child {
+        #container * :first-child {
             border-left: none;
         }
     .play-space {
@@ -58,6 +81,10 @@ body {
     }
 .footer {
     background-color: var(--lighter-background);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: hsl(0, 0%, 49%);
 }
 .pop-up {
     background-color: red;
