@@ -1,0 +1,72 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0px;
+}
+:root {
+    --board-background: hsla(208, 92%, 90%, 0.65);
+    --lighter-background: hsla(208, 92%, 98%, 0.65);
+}
+body {
+    width: 100vw;
+    height:100vh;
+    
+    background-image: url(images/mountain-landscape.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    overflow: hidden;
+    
+    display: grid;
+    grid-template-rows: 6rem 1fr 3rem;
+    gap: 4rem;
+}
+.header {
+    background-color: var(--lighter-background);
+}
+.container {
+    background-color: var(--board-background);
+    width: min(90%, 1000px);
+    justify-self: center;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+
+}
+    .board-row {
+        flex: 1;
+        width: 100%;
+        display: flex;
+    }   
+        .container :first-child * {
+            border-top: none;
+        }
+        .container * :last-child {
+            border-right: none;
+        }
+        .container :last-child * {
+            border-bottom: none;
+        }
+        .container * :first-child {
+            border-left: none;
+        }
+    .play-space {
+        flex: 1;
+        border-style: solid;
+        
+    }
+.footer {
+    background-color: var(--lighter-background);
+}
+.pop-up {
+    background-color: red;
+    position: absolute;
+    width: min(90%, 1000px);
+    aspect-ratio: 4/3;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: none;
+}
