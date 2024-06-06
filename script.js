@@ -345,50 +345,51 @@ const ai = (function () {
         for (let i = 0; i < gameBoardLength; i++) {
             for (let j = 0; j < gameBoardLength; j++) {
                 if (callback(i, j, marker) && isOpen(i, j)) {
-                    gameBoard.placeMarker(i, j, marker);
+                    gameBoard.placeMarker(i, j, player2.symbol);
                     return true
                 }
             }
         }
         return false;
     }
-    const pickBestSpot = function (marker) {
+    const pickBestSpot = function () {
         let opponentMarker = ""
-        if (marker === 'x') {
+        if (player2.symbol === 'x') {
             opponentMarker = 'o'
         } else {
             opponentMarker = 'x'
         }
-        if (hitTargetIf(isImminentWin, marker)) {
+        if (hitTargetIf(isImminentWin, player2.symbol)) {
             console.log("Imminent Win")
             return true;
         }
-        if (hitTargetIf(isImminentWin, opponentMarker)) {
+        if (hitTargetIf(isImminentWin, player1.symbol)) {
             console.log("Opponent Imminent Win")
             return true;
         }
-        if (hitTargetIf(isOpenMiddle, marker)) {
-            console.log("isOpenMiddle")
-            return true;
-        }
+        
         for (let i = 0; i < gameBoardLength; i++) {
             for (j = 0; j < gameBoardLength; j++) {
                 if (isOpenCorner(i, j) && oppositeCornerTaken(i, j)) {
                     console.log("Opposite Taken")
-                    gameBoard.placeMarker(i, j, marker);
+                    gameBoard.placeMarker(i, j, player2.symbol);
                     return true
                 };
             };
         };
-        if (hitTargetIf(isOpenCorner, marker)) {
+        if (hitTargetIf(isOpenCorner, player2.symbol)) {
             console.log("isOpenCorner")
             return true;
         }
-        if (hitTargetIf(createsABridge, marker)) {
+        if (hitTargetIf(isOpenMiddle, player2.symbol)) {
+            console.log("isOpenMiddle")
+            return true;
+        }
+        if (hitTargetIf(createsABridge, player2.symbol)) {
             console.log("createsABridge")
             return true;
         }
-        if (hitTargetIf(isOpen, marker)) {
+        if (hitTargetIf(isOpen, player2.symbol)) {
             console.log("isOpen")
             return true;
         }
@@ -436,30 +437,44 @@ const displayController = (function (playerMarker = "x") {
         outerContainer.append(newContainer)
     };
 
-    const attatchListeners = function () {
+    const attachListeners = function () {
         const playSpaces = document.querySelectorAll(".play-space")
 
         playSpaces.forEach(function (elem) {
             elem.addEventListener("click", function () {
-                gameBoard.placeMarker((elem.dataset.y), (elem.dataset.x), playerMarker);
+                gameBoard.placeMarker((elem.dataset.y), (elem.dataset.x), player1.symbol);
                 updateDisplay()
+                if (player2.name === "Computer"){
+                    ai.pickBestSpot();
+                    updateDisplay();
+                }
+                if (gameBoard.checkWin(player1.symbol) === true){
+                    alert("Player Wins")
+                }else if (gameBoard.checkWin(player2.symbol)){
+                    alert("Computer Wins")
+                } else {
+                    attachListeners()
+                }
             })
         })
     };
-    const addPlayerName = function (name) {
+    const addPlayerNames = function () {
         const nameCard = document.querySelector("#nameCard");
-        nameCard.textContent = name + ": ";
-    }
-    const updatePlayerScore = function (score) {
+        nameCard.textContent = player1.name + ": ";
+
+        const playerTwoNameCard = document.querySelector("#computerNameCard");
+        playerTwoNameCard.textContent = player2.name + ": ";
+    };
+
+    const updateScoreBoard = function () {
         const playerScoreCard = document.querySelector("#scoreCard");
-        playerScoreCard.textContent = score
-    }
-    const updatePlayer2Score = function (score) {
+        playerScoreCard.textContent = player1.getScore
+
         const ScoreCard = document.querySelector("#computerScoreCard");
-        ScoreCard.textContent = score
+        ScoreCard.textContent = player2.getScore;
     }
 
-    return { updateDisplay, attatchListeners, addPlayerName, updatePlayerScore, updatePlayer2Score }
+    return { updateDisplay, attachListeners, addPlayerNames, updateScoreBoard}
 })();
 
 const form = document.querySelector("#player-form");
@@ -468,25 +483,35 @@ let player2 = {};
 
 form.addEventListener('submit', function (event) {
     event.preventDefault();
-    
+    const popup = document.querySelector("body > div.pop-up");
     const formData = new FormData(form);
     const playerName = formData.get('name');
-    const playerTwoName = formData.get('player2');
+    const playerTwoNameIn = formData.get('player2');
     const playerSymbolInput = formData.get('symbol');
     const playerCountInput = formData.get('playerCount');
     let playerSymbol = "x";
-    let player2Symbol = "o";
+    
+    let playerTwoSymbol = "o";
     
     if (playerSymbolInput === "on"){
         playerSymbol = "o"
-        player2Symbol = "x"
+        playerTwoSymbol = "x"
     }
 
     if (playerCountInput === "on") {
         playerCount++
     }
 
+    if (playerTwoNameIn) {
+        playerTwoName = playerTwoNameIn;
+    }else {
+        playerTwoName = "Computer"
+    }
+
     player1 = player(playerName, playerSymbol);
-    displayController.addPlayerName(player1.name)
-    player2 = player(player2.name, player2Symbol)
+    player2 = player(playerTwoName, playerTwoSymbol);
+    displayController.addPlayerNames();
+    popup.style.display = "none";
+    displayController.updateDisplay()
+    displayController.attachListeners()
 })
