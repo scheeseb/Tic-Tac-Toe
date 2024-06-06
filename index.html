@@ -10,10 +10,14 @@
     <div class="header">
         <h1>Tic-Tac-Toe</h1>
         <div class="player-info-container">
-            <h2>John Doe</h2>
-            <h2>Score:</h2>
-            <h2>Longest Streak:</h2>
-            <h2>Computer Score:</h2>
+            <div class="scoreCard">
+                <h2 id="nameCard"></h2>
+                <h1 id="scoreCard">0</h1>
+            </div>
+            <div class="scoreCard">
+                <h2>Computer Score:</h2>
+                <h1 id="computerScoreCard">0</h1>
+            </div>
         </div>
     </div>
     <div id="outer-container">
@@ -23,19 +27,21 @@
     </div>
     <div class="pop-up">
         <h1>Welcome to Tic-Tac-Toe!</h1>
-        <form action="">
+        <form id="player-form" action="">
             <div class="inputContainer">
                 <label for="name">Enter Player Name</label>
                 <input type="text" name="name" id="name" required>
             </div>
             <div class="inputContainer">
                 
-                <input type="checkbox" name="toggle-symbol" id="toggle-symbol" class="toggle symbol">
-                <label for="toggle-symbol">Pick Player Marker</label>
+                <input type="checkbox" name="symbol" id="symbol" class="toggle symbol">
+                <label for="symbol">Pick Player Marker</label>
             </div>
             <div class="inputContainer">
-                <input type="checkbox" name="player-count" id="player-count" class="toggle players">
-                <label for="player-count">One Player or Two</label>
+                <input type="checkbox" name="playerCount" id="playerCount" class="toggle players">
+                <label for="playerCount">One Player or Two</label>
+                <label class="hidden" for="player2">Enter Player Two Name</label>
+                <input class="hidden" type="text" name="player2" id="name">
             </div>
             <div class="inputContainer">
                 <label for="submit">Play!</label>

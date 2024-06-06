@@ -1,3 +1,28 @@
+// debugging junk
+function setArrayX() {
+    for (i = 0; i < gameBoard.board[0].length; i++) {
+        gameBoard.board[0][i] = "x"
+    }
+}
+function setArrayY() {
+    for (i = 0; i < gameBoard.board[0].length; i++) {
+        gameBoard.board[i][1] = "x"
+    }
+
+}
+function setArrayDiag() {
+    for (i = 0; i < gameBoard.board[0].length; i++)
+        gameBoard.board[i][i] = "x"
+}
+function fillBoard() {
+    for (i = 0; i < gameBoard.board.length; i++) {
+        for (j = 0; j < gameBoard.board.length; j++) {
+            gameBoard.board[i][j] = "o"
+        }
+    }
+}
+
+// factorys
 function player(inputtedName, marker) {
     const name = inputtedName.slice(0, 1).toUpperCase() + inputtedName.slice(1);
     let score = 0;
@@ -101,7 +126,7 @@ const gameBoard = (function (size) {
     return { board, checkWin, boardFull, placeMarker }
 })(3);
 
-const ai = function () {
+const ai = (function () {
     const theBoard = gameBoard.board;
     const gameBoardLength = theBoard.length;
 
@@ -369,7 +394,7 @@ const ai = function () {
         }
     };
     return { pickBestSpot }
-};
+})();
 
 const displayController = (function (playerMarker = "x") {
     const outerContainer = document.querySelector("#outer-container");
@@ -421,44 +446,47 @@ const displayController = (function (playerMarker = "x") {
             })
         })
     };
+    const addPlayerName = function (name) {
+        const nameCard = document.querySelector("#nameCard");
+        nameCard.textContent = name + ": ";
+    }
+    const updatePlayerScore = function (score) {
+        const playerScoreCard = document.querySelector("#scoreCard");
+        playerScoreCard.textContent = score
+    }
+    const updatePlayer2Score = function (score) {
+        const ScoreCard = document.querySelector("#computerScoreCard");
+        ScoreCard.textContent = score
+    }
 
-    return { updateDisplay, attatchListeners }
+    return { updateDisplay, attatchListeners, addPlayerName, updatePlayerScore, updatePlayer2Score }
 })();
 
+const form = document.querySelector("#player-form");
+let player1 = {};
+let player2 = {};
 
-
-
-
-
-
-
-displayController.updateDisplay()
-// debugging junk
-function setArrayX() {
-    for (i = 0; i < gameBoard.board[0].length; i++) {
-        gameBoard.board[0][i] = "x"
+form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    
+    const formData = new FormData(form);
+    const playerName = formData.get('name');
+    const playerTwoName = formData.get('player2');
+    const playerSymbolInput = formData.get('symbol');
+    const playerCountInput = formData.get('playerCount');
+    let playerSymbol = "x";
+    let player2Symbol = "o";
+    
+    if (playerSymbolInput === "on"){
+        playerSymbol = "o"
+        player2Symbol = "x"
     }
-}
-function setArrayY() {
-    for (i = 0; i < gameBoard.board[0].length; i++) {
-        gameBoard.board[i][1] = "x"
+
+    if (playerCountInput === "on") {
+        playerCount++
     }
 
-}
-function setArrayDiag() {
-    for (i = 0; i < gameBoard.board[0].length; i++)
-        gameBoard.board[i][i] = "x"
-}
-function fillBoard() {
-    for (i = 0; i < gameBoard.board.length; i++) {
-        for (j = 0; j < gameBoard.board.length; j++) {
-            gameBoard.board[i][j] = "o"
-        }
-    }
-}
-function hitTarget(y, x) {
-    gameBoard.board[y][x] = "x"
-}
-// useless Calls
-console.log(gameBoard.board)
-
+    player1 = player(playerName, playerSymbol);
+    displayController.addPlayerName(player1.name)
+    player2 = player(player2.name, player2Symbol)
+})

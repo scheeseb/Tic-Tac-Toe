@@ -37,12 +37,20 @@ body {
         display: flex;
         
     }
-    .player-info-container * {
+    .player-info-container div {
         border-left: solid;
         flex: 1;
         font-size: min(4.5vw, 40px);
         padding-left: .5rem;
         margin-bottom: .2rem;
+    }
+    .scoreCard {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .scoreCard h2, .scoreCard h1 {
+        /* flex: 1; */
     }
 #outer-container {
     width: 100%;
@@ -118,13 +126,13 @@ body {
     align-items: center;
 }
 .pop-up input[type="checkbox"].toggle + label::after {
-    width: 1.2em;
-    height: 1.2em;
+    width: min(8vw, 40px);
+    height: min(8vw, 40px);
     background-color: var(--bright-blue);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.5vw;
+    font-size: min(8vw, 30px);
     border-radius: 50%;
     margin-left: 1rem;
 }
@@ -141,4 +149,10 @@ body {
 
 .pop-up input[type="checkbox"].players:checked + label::after {
     content: "2";
+}
+.hidden {
+    display: none;
+}
+.pop-up input[type="checkbox"].players:checked ~ .hidden {
+    display: flex;
 }
