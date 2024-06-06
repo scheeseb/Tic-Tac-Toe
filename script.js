@@ -369,15 +369,16 @@ const ai = function () {
         }
     };
     return { pickBestSpot }
-}
-const displayController = (function () {
+};
+
+const displayController = (function (playerMarker = "x") {
     const outerContainer = document.querySelector("#outer-container");
     const theBoard = gameBoard.board;
     const gameBoardLength = theBoard.length
 
     const updateDisplay = function () {
         const oldContainer = document.querySelector("#container");
-        if(oldContainer) {
+        if (oldContainer) {
             outerContainer.removeChild(oldContainer);
         }
 
@@ -395,15 +396,11 @@ const displayController = (function () {
                 playSpaceDiv.className = 'play-space';
                 playSpaceDiv.dataset.y = i;
                 playSpaceDiv.dataset.x = j;
-                playSpaceDiv.addEventListener('click', function () {
-                    gameBoard.placeMarker(i, j, 'x');
-                    updateDisplay()
-                })
 
                 if (theBoard[i][j] === "x") {
                     playSpaceDiv.textContent = 'X';
-                } else if (theBoard[i][j] === "Y") {
-                    playSpaceDiv.textContent = "Y"
+                } else if (theBoard[i][j] === "o") {
+                    playSpaceDiv.textContent = "O"
                 } else {
                     playSpaceDiv.textContent = ""
                 }
@@ -413,7 +410,19 @@ const displayController = (function () {
         }
         outerContainer.append(newContainer)
     };
-    return { updateDisplay }
+
+    const attatchListeners = function () {
+        const playSpaces = document.querySelectorAll(".play-space")
+
+        playSpaces.forEach(function (elem) {
+            elem.addEventListener("click", function () {
+                gameBoard.placeMarker((elem.dataset.y), (elem.dataset.x), playerMarker);
+                updateDisplay()
+            })
+        })
+    };
+
+    return { updateDisplay, attatchListeners }
 })();
 
 

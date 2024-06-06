@@ -21,7 +21,28 @@
     <div class="footer">
         <p>Created by Samuel Cheeseboro</p>
     </div>
-    <div class="pop-up"></div>
+    <div class="pop-up">
+        <h1>Welcome to Tic-Tac-Toe!</h1>
+        <form action="">
+            <div class="inputContainer">
+                <label for="name">Enter Player Name</label>
+                <input type="text" name="name" id="name" required>
+            </div>
+            <div class="inputContainer">
+                
+                <input type="checkbox" name="toggle-symbol" id="toggle-symbol" class="toggle symbol">
+                <label for="toggle-symbol">Pick Player Marker</label>
+            </div>
+            <div class="inputContainer">
+                <input type="checkbox" name="player-count" id="player-count" class="toggle players">
+                <label for="player-count">One Player or Two</label>
+            </div>
+            <div class="inputContainer">
+                <label for="submit">Play!</label>
+                <input type="submit" value="Play" id="submit">
+            </div>
+        </form>
+    </div>
 
     <script src="script.js"></script>
 </body>

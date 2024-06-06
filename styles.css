@@ -7,6 +7,7 @@
 :root {
     --board-background: hsla(208, 92%, 90%, 0.65);
     --lighter-background: hsla(208, 92%, 95%, 0.8);
+    --bright-blue: hsla(208, 100%, 60%, 0.65);
 }
 body {
     width: 100vw;
@@ -87,13 +88,57 @@ body {
     color: hsl(0, 0%, 49%);
 }
 .pop-up {
-    background-color: red;
+    background-color: var(--lighter-background);
     position: absolute;
     width: min(90%, 1000px);
-    aspect-ratio: 4/3;
+    height: max-content;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 
-    display: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.pop-up form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem;
+}
+.pop-up input[type="checkbox"].toggle {
+    opacity: 0;
+    position: absolute;
+    left: -9000px;
+    top: -9000px;
+}
+.pop-up input[type="checkbox"].toggle + label{
+    display: flex;
+    align-items: center;
+}
+.pop-up input[type="checkbox"].toggle + label::after {
+    width: 1.2em;
+    height: 1.2em;
+    background-color: var(--bright-blue);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5vw;
+    border-radius: 50%;
+    margin-left: 1rem;
+}
+.pop-up input[type="checkbox"].symbol + label::after {
+    content: "X";
+}
+
+.pop-up input[type="checkbox"].symbol:checked + label::after {
+    content: "O";
+}
+.pop-up input[type="checkbox"].players + label::after {
+    content: "1";
+}
+
+.pop-up input[type="checkbox"].players:checked + label::after {
+    content: "2";
 }
