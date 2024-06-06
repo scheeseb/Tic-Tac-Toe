@@ -407,8 +407,6 @@ const displayController = (function () {
                 } else {
                     playSpaceDiv.textContent = ""
                 }
-
-
                 rowDiv.append(playSpaceDiv);
             }
             newContainer.append(rowDiv)
