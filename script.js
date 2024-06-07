@@ -467,6 +467,7 @@ const displayController = (function (playerMarker = "x") {
                 let newMarker = marker;
                 if (player2.name === "Computer"){
                     ai.pickBestSpot();
+                    updateDisplay()
                 }else {
                     if (marker === "x") { 
                         newMarker = "o"
