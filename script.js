@@ -120,7 +120,9 @@ const gameBoard = (function (size) {
         return (fullStatus)
     }
     const placeMarker = function (y, x, marker) {
-        gameBoard.board[y][x] = marker;
+        if (gameBoard.board[y][x] === 0){
+            gameBoard.board[y][x] = marker;
+        }
     };
 
     return { board, checkWin, boardFull, placeMarker }
@@ -130,15 +132,15 @@ const ai = (function () {
     const theBoard = gameBoard.board;
     const gameBoardLength = theBoard.length;
 
-    const checkForOpenLanes = function (y, x) {
+    const checkForOpenLanes = function (y, x, playerSymbol) {
         let hits = 0;
 
         (function checkColoumn(x) {
-            let clear = true;
+            let clear = false;
             for (let i = 0; i < gameBoardLength; i++) {
-                if (theBoard[i][x] !== 0) {
-                    clear = false;
-                }
+                if (theBoard[i][x] === 0 || theBoard[i][x] === playerSymbol) {
+                    clear = true;
+                }else{ clear = false}
             }
             if (clear === true) {
                 hits++;
@@ -191,8 +193,9 @@ const ai = (function () {
 
         return (hits);
     }
-    function createsABridge(y, x) {
-        if (checkForOpenLanes(y, x) > 1) {
+    function blocksAWin(y, x, playerMarker) {
+        console.log(isOpenCorner(y,x))
+        if (checkForOpenLanes(y, x, playerMarker) < 1 && isOpenCorner(y,x) === false) {
             return true;
         } else {
             return false;
@@ -367,6 +370,20 @@ const ai = (function () {
             console.log("Opponent Imminent Win")
             return true;
         }
+        if (hitTargetIf(isOpenMiddle, player2.symbol)) {
+            console.log("isOpenMiddle")
+            return true;
+        }
+        // Creates a bridge
+        for (let i = 0; i < gameBoardLength; i++) {
+            for (j = 0; j < gameBoardLength; j++) {
+                if (blocksAWin(i, j, player2.symbol) && isOpen(i, j)) {
+                    console.log("Opposite Taken")
+                    gameBoard.placeMarker(i, j, player2.symbol);
+                    return true
+                };
+            };
+        };
         
         for (let i = 0; i < gameBoardLength; i++) {
             for (j = 0; j < gameBoardLength; j++) {
@@ -381,14 +398,8 @@ const ai = (function () {
             console.log("isOpenCorner")
             return true;
         }
-        if (hitTargetIf(isOpenMiddle, player2.symbol)) {
-            console.log("isOpenMiddle")
-            return true;
-        }
-        if (hitTargetIf(createsABridge, player2.symbol)) {
-            console.log("createsABridge")
-            return true;
-        }
+        
+        
         if (hitTargetIf(isOpen, player2.symbol)) {
             console.log("isOpen")
             return true;
