@@ -110,13 +110,13 @@ const gameBoard = (function (size) {
     }
     const boardFull = function () {
         let fullStatus = true;
-        gameBoard.board.forEach(function (array) {
-            array.forEach(function (mark) {
-                if (mark === 0) {
+        for (let i = 0; i < board.length; i++){
+            for (let j = 0; j < board.length; j++){
+                if (board[i][j] === 0){
                     fullStatus = false;
                 }
-            })
-        })
+            }
+        }
         return (fullStatus)
     }
     const placeMarker = function (y, x, marker) {
@@ -125,7 +125,15 @@ const gameBoard = (function (size) {
         }
     };
 
-    return { board, checkWin, boardFull, placeMarker }
+    const reset = (function () {
+        for (let i = 0; i < board.length; i++){
+            for (let j = 0; j < board.length; j++){
+                board[i][j] = 0;
+            }
+        }
+    })
+
+    return { board, checkWin, boardFull, placeMarker, reset }
 })(3);
 
 const ai = (function () {
@@ -448,24 +456,45 @@ const displayController = (function (playerMarker = "x") {
         outerContainer.append(newContainer)
     };
 
-    const attachListeners = function () {
+    const attachListeners = function (marker = player1.symbol) {
+       console.log(marker)
         const playSpaces = document.querySelectorAll(".play-space")
 
         playSpaces.forEach(function (elem) {
             elem.addEventListener("click", function () {
-                gameBoard.placeMarker((elem.dataset.y), (elem.dataset.x), player1.symbol);
-                updateDisplay()
+                gameBoard.placeMarker((elem.dataset.y), (elem.dataset.x), marker);
+                updateDisplay();
+                let newMarker = marker;
                 if (player2.name === "Computer"){
                     ai.pickBestSpot();
-                    updateDisplay();
+                }else {
+                    if (marker === "x") { 
+                        newMarker = "o"
+                    }else {
+                        newMarker = "x"
+                    }
                 }
+
                 if (gameBoard.checkWin(player1.symbol) === true){
-                    alert("Player Wins")
-                }else if (gameBoard.checkWin(player2.symbol)){
-                    alert("Computer Wins")
-                } else {
-                    attachListeners()
+                    alert(player1.name + " Wins");
+                    player1.addPoint();
+                    gameBoard.reset();
+                    displayController.updateScoreBoard();
+                    displayController.updateDisplay();
+                }else
+                if (gameBoard.checkWin(player2.symbol)){
+                    alert(player2.name + " Wins");
+                    player2.addPoint();
+                    gameBoard.reset();
+                    displayController.updateScoreBoard();
+                    displayController.updateDisplay();
+                }else
+                if (gameBoard.boardFull()){
+                    alert("Tie");
+                    gameBoard.reset();
+                    displayController.updateDisplay();
                 }
+                attachListeners(newMarker);
             })
         })
     };
@@ -479,10 +508,10 @@ const displayController = (function (playerMarker = "x") {
 
     const updateScoreBoard = function () {
         const playerScoreCard = document.querySelector("#scoreCard");
-        playerScoreCard.textContent = player1.getScore
+        playerScoreCard.textContent = player1.getScore();
 
         const ScoreCard = document.querySelector("#computerScoreCard");
-        ScoreCard.textContent = player2.getScore;
+        ScoreCard.textContent = player2.getScore();
     }
 
     return { updateDisplay, attachListeners, addPlayerNames, updateScoreBoard}
@@ -524,5 +553,5 @@ form.addEventListener('submit', function (event) {
     displayController.addPlayerNames();
     popup.style.display = "none";
     displayController.updateDisplay()
-    displayController.attachListeners()
+    displayController.attachListeners(player1.symbol)
 })
