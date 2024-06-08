@@ -110,9 +110,9 @@ const gameBoard = (function (size) {
     }
     const boardFull = function () {
         let fullStatus = true;
-        for (let i = 0; i < board.length; i++){
-            for (let j = 0; j < board.length; j++){
-                if (board[i][j] === 0){
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board.length; j++) {
+                if (board[i][j] === 0) {
                     fullStatus = false;
                 }
             }
@@ -120,14 +120,14 @@ const gameBoard = (function (size) {
         return (fullStatus)
     }
     const placeMarker = function (y, x, marker) {
-        if (gameBoard.board[y][x] === 0){
+        if (gameBoard.board[y][x] === 0) {
             gameBoard.board[y][x] = marker;
         }
     };
 
     const reset = (function () {
-        for (let i = 0; i < board.length; i++){
-            for (let j = 0; j < board.length; j++){
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board.length; j++) {
                 board[i][j] = 0;
             }
         }
@@ -148,7 +148,7 @@ const ai = (function () {
             for (let i = 0; i < gameBoardLength; i++) {
                 if (theBoard[i][x] === 0 || theBoard[i][x] === playerSymbol) {
                     clear = true;
-                }else{ clear = false}
+                } else { clear = false }
             }
             if (clear === true) {
                 hits++;
@@ -202,8 +202,8 @@ const ai = (function () {
         return (hits);
     }
     function blocksAWin(y, x, playerMarker) {
-        console.log(isOpenCorner(y,x))
-        if (checkForOpenLanes(y, x, playerMarker) < 1 && isOpenCorner(y,x) === false) {
+        console.log(isOpenCorner(y, x))
+        if (checkForOpenLanes(y, x, playerMarker) < 1 && isOpenCorner(y, x) === false) {
             return true;
         } else {
             return false;
@@ -392,7 +392,7 @@ const ai = (function () {
                 };
             };
         };
-        
+
         for (let i = 0; i < gameBoardLength; i++) {
             for (j = 0; j < gameBoardLength; j++) {
                 if (isOpenCorner(i, j) && oppositeCornerTaken(i, j)) {
@@ -406,8 +406,8 @@ const ai = (function () {
             console.log("isOpenCorner")
             return true;
         }
-        
-        
+
+
         if (hitTargetIf(isOpen, player2.symbol)) {
             console.log("isOpen")
             return true;
@@ -454,68 +454,79 @@ const displayController = (function (playerMarker = "x") {
             newContainer.append(rowDiv)
         }
         outerContainer.append(newContainer)
-    };
 
-    const attachListeners = function (marker = player1.symbol) {
-       console.log(marker)
-        const playSpaces = document.querySelectorAll(".play-space")
-
-        playSpaces.forEach(function (elem) {
-            elem.addEventListener("click", function () {
-                gameBoard.placeMarker((elem.dataset.y), (elem.dataset.x), marker);
-                updateDisplay();
-                let newMarker = marker;
-                if (player2.name === "Computer"){
-                    ai.pickBestSpot();
-                    updateDisplay()
-                }else {
-                    if (marker === "x") { 
-                        newMarker = "o"
-                    }else {
-                        newMarker = "x"
-                    }
-                }
-
-                if (gameBoard.checkWin(player1.symbol) === true){
-                    alert(player1.name + " Wins");
-                    player1.addPoint();
-                    gameBoard.reset();
-                    displayController.updateScoreBoard();
-                    displayController.updateDisplay();
-                }else
-                if (gameBoard.checkWin(player2.symbol)){
-                    alert(player2.name + " Wins");
-                    player2.addPoint();
-                    gameBoard.reset();
-                    displayController.updateScoreBoard();
-                    displayController.updateDisplay();
-                }else
-                if (gameBoard.boardFull()){
-                    alert("Tie");
-                    gameBoard.reset();
-                    displayController.updateDisplay();
-                }
-                attachListeners(newMarker);
-            })
-        })
-    };
-    const addPlayerNames = function () {
         const nameCard = document.querySelector("#nameCard");
         nameCard.textContent = player1.name + ": ";
 
         const playerTwoNameCard = document.querySelector("#computerNameCard");
         playerTwoNameCard.textContent = player2.name + ": ";
-    };
 
-    const updateScoreBoard = function () {
+
         const playerScoreCard = document.querySelector("#scoreCard");
         playerScoreCard.textContent = player1.getScore();
 
         const ScoreCard = document.querySelector("#computerScoreCard");
         ScoreCard.textContent = player2.getScore();
+    };
+
+    function handleWin() {
+        if (gameBoard.checkWin(player1.symbol) === true) {
+            alert(player1.name + " Wins");
+            player1.addPoint();
+            gameBoard.reset();
+            displayController.updateDisplay();
+        } else
+            if (gameBoard.checkWin(player2.symbol)) {
+                alert(player2.name + " Wins");
+                player2.addPoint();
+                gameBoard.reset();
+                displayController.updateDisplay();
+            } else
+                if (gameBoard.boardFull()) {
+                    alert("Tie");
+                    gameBoard.reset();
+                    displayController.updateDisplay();
+                }
     }
 
-    return { updateDisplay, attachListeners, addPlayerNames, updateScoreBoard}
+    const attachListenersPlayer1 = function () {
+        const playSpaces = document.querySelectorAll(".play-space")
+
+        playSpaces.forEach(function (elem) {
+            elem.addEventListener("click", function () {
+                gameBoard.placeMarker((elem.dataset.y), (elem.dataset.x), player1.symbol);
+                updateDisplay();
+
+                handleWin()
+                attachListenersPlayer2();
+            })
+        })
+    };
+
+    const attachListenersPlayer2 = function () {
+        const playSpaces = document.querySelectorAll(".play-space")
+        if (player2.name === "Computer") {
+            ai.pickBestSpot();
+            updateDisplay();
+            handleWin();
+            attachListenersPlayer1();
+        } else {
+            playSpaces.forEach(function (elem) {
+                elem.addEventListener("click", function () {
+                    gameBoard.placeMarker((elem.dataset.y), (elem.dataset.x), player2.symbol);
+
+                    updateDisplay();
+                    handleWin();
+                    attachListenersPlayer1();
+                })
+            })
+        }
+
+
+    };
+
+
+    return { updateDisplay, attachListenersPlayer1 }
 })();
 
 const form = document.querySelector("#player-form");
@@ -531,10 +542,10 @@ form.addEventListener('submit', function (event) {
     const playerSymbolInput = formData.get('symbol');
     const playerCountInput = formData.get('playerCount');
     let playerSymbol = "x";
-    
+
     let playerTwoSymbol = "o";
-    
-    if (playerSymbolInput === "on"){
+
+    if (playerSymbolInput === "on") {
         playerSymbol = "o"
         playerTwoSymbol = "x"
     }
@@ -545,14 +556,13 @@ form.addEventListener('submit', function (event) {
 
     if (playerTwoNameIn) {
         playerTwoName = playerTwoNameIn;
-    }else {
+    } else {
         playerTwoName = "Computer"
     }
 
     player1 = player(playerName, playerSymbol);
     player2 = player(playerTwoName, playerTwoSymbol);
-    displayController.addPlayerNames();
     popup.style.display = "none";
     displayController.updateDisplay()
-    displayController.attachListeners(player1.symbol)
+    displayController.attachListenersPlayer1()
 })
