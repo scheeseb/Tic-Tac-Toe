@@ -32,6 +32,21 @@ body {
 .header  h1 {
     align-self: center;
 }
+.header button {
+    width: 10%;
+    height: 3rem;
+    align-self: flex-end;
+    appearance: none;
+    background-color: var(--board-background);
+    border-style: solid;
+    border-color: var(--lighter-background);
+    box-shadow: 5px 5px 5px hsl(0, 0%, 50%);
+    margin: 8px;
+}
+.header > div {
+    display: flex;
+    justify-content: space-between;
+}
 
     .player-info-container {
         display: flex;

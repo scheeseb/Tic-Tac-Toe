@@ -29,8 +29,11 @@ function player(inputtedName, marker) {
     const symbol = marker;
     const addPoint = function () { score++ }
     const getScore = function () { return score }
+    const resetScore = function () {
+        score = 0;
+    }
 
-    return { name, symbol, getScore, addPoint }
+    return { name, symbol, getScore, addPoint, resetScore }
 }
 
 
@@ -469,23 +472,28 @@ const displayController = (function (playerMarker = "x") {
         ScoreCard.textContent = player2.getScore();
     };
 
+    function displayWinner (text) {
+        const winnerDisplay = document.querySelector("#winnerCircle");
+        winnerDisplay.textContent = text
+        setTimeout(function () {
+            winnerDisplay.textContent = "";
+        }, 3000)
+    }
+
     function handleWin() {
         if (gameBoard.checkWin(player1.symbol) === true) {
-            alert(player1.name + " Wins");
+            displayWinner(player1.name + " Wins!")
             player1.addPoint();
             gameBoard.reset();
-            displayController.updateDisplay();
         } else
             if (gameBoard.checkWin(player2.symbol)) {
-                alert(player2.name + " Wins");
+                displayWinner(player2.name + " Wins!")
                 player2.addPoint();
-                gameBoard.reset();
-                displayController.updateDisplay();
+                gameBoard.reset()
             } else
                 if (gameBoard.boardFull()) {
-                    alert("Tie");
+                    displayWinner("Tie")
                     gameBoard.reset();
-                    displayController.updateDisplay();
                 }
     }
 
@@ -498,6 +506,9 @@ const displayController = (function (playerMarker = "x") {
                 updateDisplay();
 
                 handleWin()
+
+                updateDisplay();
+    
                 attachListenersPlayer2();
             })
         })
@@ -508,25 +519,38 @@ const displayController = (function (playerMarker = "x") {
         if (player2.name === "Computer") {
             ai.pickBestSpot();
             updateDisplay();
-            handleWin();
+
+            handleWin()
+
+            updateDisplay();
+
             attachListenersPlayer1();
+
         } else {
             playSpaces.forEach(function (elem) {
                 elem.addEventListener("click", function () {
                     gameBoard.placeMarker((elem.dataset.y), (elem.dataset.x), player2.symbol);
 
                     updateDisplay();
-                    handleWin();
+
+                    handleWin()
+
                     attachListenersPlayer1();
                 })
             })
         }
-
-
     };
 
+    const restartGame = function () {
+        gameBoard.reset();
+        player1.resetScore()
+        player2.resetScore()
+        updateDisplay();
+        attachListenersPlayer1();
+    }
 
-    return { updateDisplay, attachListenersPlayer1 }
+
+    return { updateDisplay, attachListenersPlayer1, restartGame }
 })();
 
 const form = document.querySelector("#player-form");
@@ -565,4 +589,10 @@ form.addEventListener('submit', function (event) {
     popup.style.display = "none";
     displayController.updateDisplay()
     displayController.attachListenersPlayer1()
+})
+
+const restartBttn = document.querySelector("#restartBttn");
+
+restartBttn.addEventListener("click", function () {
+    displayController.restartGame();
 })
